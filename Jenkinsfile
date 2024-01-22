@@ -1,59 +1,56 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'environment', defaultValue: 'default', description: 'Workspace/environment file to use for deployment')
+        string(name: 'version', defaultValue: '', description: 'Version variable to pass to Terraform')
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+    }
+    
     environment {
-        TF_HOME = tool 'Terraform'
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
     stages {
-        stage('Checkout') {
+        stage('Plan') {
             steps {
-                git 'https://github.com/BHUPESHGCTECH/Terraform-Jenkins-Jenkinsfile.git'
+                script {
+                    currentBuild.displayName = params.version
+                }
+                sh 'terraform init -input=false'
+                sh 'terraform workspace select ${environment}'
+                sh "terraform plan -input=false -out tfplan -var 'version=${params.version}' --var-file=environments/${params.environment}.tfvars"
+                sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
 
-        stage('Terraform Init') {
+        stage('Approval') {
+            when {
+                not {
+                    equals expected: true, actual: params.autoApprove
+                }
+            }
+
             steps {
                 script {
-                    sh "${TF_HOME}/terraform init -input=false"
+                    def plan = readFile 'tfplan.txt'
+                    input message: "Do you want to apply the plan?",
+                        parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
                 }
             }
         }
 
-        stage('Terraform Plan') {
+        stage('Apply') {
             steps {
-                script {
-                    sh "${TF_HOME}/terraform plan -out=tfplan -input=false"
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                script {
-                    input message: 'Deploy changes?', ok: 'Deploy'
-                    sh "${TF_HOME}/terraform apply -input=false tfplan"
-                }
-            }
-        }
-
-        stage('Terraform Destroy') {
-            steps {
-                script {
-                    input message: 'Destroy infrastructure?', ok: 'Destroy'
-                    sh "${TF_HOME}/terraform destroy -auto-approve -input=false"
-                }
+                sh "terraform apply -input=false tfplan"
             }
         }
     }
 
     post {
         always {
-            script {
-                // Clean up
-                sh "rm -rf .terraform"
-                sh "rm -f tfplan"
-            }
+            archiveArtifacts artifacts: 'tfplan.txt'
         }
     }
 }
