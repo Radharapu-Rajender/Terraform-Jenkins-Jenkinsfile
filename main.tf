@@ -1,19 +1,11 @@
 provider "aws" {
-  region = "ap-south-1"
+    region = "ap-south-1a"  
 }
 
-resource "aws_instance" "example" {
-  ami           = "ami-0d3f444bc76de0a79"
+resource "aws_instance" "foo" {
+  ami           = "ami-0d980397a6e8935cd" 
   instance_type = "t2.micro"
   tags = {
-    Name = "ExampleInstance"
-  }
-}
-
-terraform {
-  backend "s3" {
-    bucket = "bhupesh121212142"
-    key    = "terraform.tfstate"
-    region = "ap-south-1"
+      Name = "TF-Instance"
   }
 }
