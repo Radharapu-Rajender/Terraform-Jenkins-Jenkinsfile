@@ -10,22 +10,19 @@ pipeline {
 
    agent  any
     stages {
-        stage('checkout') {
-            steps {
-                 script{
-                        dir("terraform")
+        stage('checkout')
+        {
                         {
                             git "https://github.com/BHUPESHGCTECH/Terraform-Jenkins-Jenkinsfile.git'"
                         }
-                    }
-                }
-            }
+                    
+        }
 
         stage('Plan') {
             steps {
-                sh 'pwd;cd terraform/ ; terraform init'
-                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
-                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
+                terraform init'
+                terraform plan -out tfplan"
+                terraform show -no-color tfplan > tfplan.txt'
             }
         }
         stage('Approval') {
@@ -46,7 +43,7 @@ pipeline {
 
         stage('Apply') {
             steps {
-                sh "pwd;cd terraform/ ; terraform apply -input=false tfplan"
+                sh "terraform apply -input=false tfplan"
             }
         }
     }
