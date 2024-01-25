@@ -22,8 +22,8 @@ resource "aws_subnet" "my_subnet" {
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "us-east-2b"  # Change this to an available availability zone in your region
   map_public_ip_on_launch = true
-}
 
+}
 # Create a security group for the instance
 resource "aws_security_group" "instance_sg" {
   vpc_id = aws_vpc.my_vpc.id
@@ -42,3 +42,4 @@ resource "aws_security_group" "instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+}
