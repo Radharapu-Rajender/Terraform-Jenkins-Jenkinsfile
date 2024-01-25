@@ -1,7 +1,7 @@
 provider "aws" {
   access_key = "AKIA5QZ56GNWK7G2ZQDX"
   secret_key = "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"
-  region = "ap-south-1"
+  region = "us-east-2b"
 }
 
 # Create a VPC
@@ -46,8 +46,8 @@ resource "aws_security_group" "instance_sg" {
 
 # Launch an EC2 instance
 resource "aws_instance" "my_instance" {
-  ami             = "ami-0d3f444bc76de0a79"  # Replace with the desired AMI ID
-  instance_type   = "t2.micro"  # Change this to the desired instance type
+  ami             = "ami-09694bfab577e90b0"  # Replace with the desired AMI ID
+  instance_type   = "us-east-2b"  # Change this to the desired instance type
   subnet_id       = aws_subnet.my_subnet.id
  
 
