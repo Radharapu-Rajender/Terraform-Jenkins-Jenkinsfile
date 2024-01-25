@@ -41,14 +41,4 @@ resource "aws_security_group" "instance_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-
-# Launch an EC2 instance
-
-
-  tags = {
-    Name = "MyInstance"
-  }
-}
 
