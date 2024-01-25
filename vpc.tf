@@ -41,9 +41,6 @@ resource "aws_security_group" "instance_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-provider "aws" {
-  region = "us-east-2"  # Set your desired region
 }
 
 resource "aws_instance" "example" {
@@ -56,6 +53,3 @@ resource "aws_instance" "example" {
 }
 
 
-
-
-}
