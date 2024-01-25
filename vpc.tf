@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "my_igw" {
 resource "aws_subnet" "my_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "ap-south-1a"  # Change this to an available availability zone in your region
+  availability_zone       = "us-east-2b"  # Change this to an available availability zone in your region
   map_public_ip_on_launch = true
 }
 
@@ -47,7 +47,7 @@ resource "aws_security_group" "instance_sg" {
 # Launch an EC2 instance
 resource "aws_instance" "my_instance" {
   ami             = "ami-09694bfab577e90b0"  # Replace with the desired AMI ID
-  instance_type   = "us-east-2b"  # Change this to the desired instance type
+  instance_type   = "t2.micro"  # Change this to the desired instance type
   subnet_id       = aws_subnet.my_subnet.id
  
 
